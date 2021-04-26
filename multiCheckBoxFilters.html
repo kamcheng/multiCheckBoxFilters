@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+
+<body>
+
+<!-- 
+Dependency: jquery
+Elements:
+	"id": keep track of the each drop down selections.  
+	"data-placeholder": selection drop down placeholder (if not provided, default is "Select below") 
+	"classname": jquery selectors attached to the plugin.
+-->
+
+	<style>
+	/*--------------*/
+	.multiOptionWrapper {
+		display: block;
+		float: left;
+		width: 245px;
+		margin-right: 38px;
+	}
+	.multiOptionSelect {
+		border:1px solid #000;
+		border-radius:0px;
+		cursor:pointer;
+		position: relative;
+		padding: 9px 0px 9px 9px;
+		width: 95%;
+	}
+
+	.optionContainer {
+		display:none;
+		position: absolute;
+		z-index: 2;
+		border: 1px solid #000;
+		background: #fff;
+		width: 237px;
+		padding: 5px 5px 12px 0;
+	}
+
+	.dropdownIcon {
+		 width: 0;
+		 height: 0;
+		 border-left: 7px solid transparent;
+		 border-right: 7px solid transparent;
+		 border-top: 9px solid #e2e2e2;
+		 position: absolute;
+		 top: 14px;
+		 right: 6px;
+	}
+	.dropdownIcon.on {
+		 border-top: none;
+		 border-bottom: 9px solid #e2e2e2;
+	}
+
+	.optionContainer.on {
+		display:block;
+	}
+
+	.optionContent {
+		overflow-y: auto;
+		height: 130px;
+	}
+	.optionContainer .checkboxRow {
+		clear:both;
+		overflow: hidden;
+		display: flex;
+	}
+	.optionContainer .checkboxRow:hover {
+		background-color:#cfcfcf;
+	}
+	.optionContent .optionName {
+		float: left;
+		left: 9px;
+		position: relative;
+	}
+
+	.optionHeader {
+		overflow:hidden;
+		position:relative;
+		height: 28px;
+	}
+	
+	.optionHeader.selectAll {
+		background-color: #333
+	}
+	
+	.optionHeader .selectAllCheckbox {
+		position: relative;
+		top: 4px;
+		left: 0px;
+	}
+	.optionHeader .selectAllText {
+		position: absolute;
+		top: 5px;
+		left: 29px;
+		color: #fff;
+	}
+
+	#content, .col-md-12, #showSelectedFilters {
+		display: block;
+		float: left;
+		clear: both;
+		width: 100%;
+	}
+	.filterSelected>span {
+		border: 1px solid #ccc;
+		background-color: lightblue;
+		padding: 3px 6px;
+		display: block;
+		float: left;
+		margin-right: 5px;
+		margin-top: 5px;
+	}
+	.filterSelected .removeFilter {
+		padding-left: 10px;
+		cursor: pointer;
+	}
+
+	label {
+		width: 100%;
+		float: left;
+		display: block;
+	}
+
+	label input {
+		display: block;
+		float: left;
+	}
+
+	input.searchFilter {
+		padding: 4px 4px;
+		width: 93%;
+		position: relative;
+		left: 4px;
+		top: 0px;
+		background-color: #f1f1f1;
+	}
+	</style>
+
+	<div>
+		<select id="programmingLanguages" class="multiCheckBoxFilters" data-placeholder="Select Programming Languages">		
+			<option value="1">C</option>
+			<option value="2">C++</option>
+			<option value="3">Java</option>
+			<option value="4">Javascript</option>
+			<option value="5">PHP</option>
+			<option value="6">Python</option>
+			<option value="7">Shell</option>
+		</select>
+		<select id="browsers" class="multiCheckBoxFilters" data-placeholder="Select Browsers">		
+			<option value="1">Google Chrome</option>
+			<option value="2">Internet Explorer</option>
+			<option value="3">Firefox</option>
+			<option value="4">Opera</option>
+			<option value="5">Safari</option>
+		</select>
+		<select id="colors" class="multiCheckBoxFilters">	
+			<option value="1">Black</option>
+			<option value="2">Blue</option>
+			<option value="3">Orange</option>
+			<option value="4">Gray</option>
+			<option value="5">Lime</option>
+			<option value="6">Navy</option>
+			<option value="7">Maroon</option>
+			<option value="8">Olive</option>
+			<option value="9">Purple</option>
+			<option value="10">Red</option>
+			<option value="11">Teal</option>
+			<option value="12">White</option>
+			<option value="13">Yellow</option>
+		</select>
+		<div id="showSelectedFilters">&nbsp;</div>
+	</div>
+	
+	<script
+	  src="https://code.jquery.com/jquery-3.6.0.min.js"
+	  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	  crossorigin="anonymous"></script>
+	  
+	<script src="multiCheckBoxFilters.js"></script>
+	
+	<script>
+		//$(".multiCheckBoxFilters").multiCheckBoxFilters(); //simple usage.
+		
+		//$(".multiCheckBoxFilters").multiCheckBoxFilters({searchFilter: true}); //with search capability.
+		//$(".multiCheckBoxFilters").multiCheckBoxFilters({selectAllCheckbox: true}); //select all checkboxes capability.
+		//$(".multiCheckBoxFilters").multiCheckBoxFilters({mouseleave: true, selectAllCheckbox: true}); //mouse leave and close up dropdown feature.
+		
+		// unique IDs with different settings/features.
+		
+		$("#programmingLanguages").multiCheckBoxFilters();
+		$("#browsers").multiCheckBoxFilters({searchFilter: true});
+		$("#colors").multiCheckBoxFilters({selectAllCheckbox: true});
+		
+
+		$('#showSelectedFilters').on('click', '.removeFilter', function(){
+			var id = $(this).data('id');
+			var filter = $(this).data('filter');
+			
+			if(id == 'clearall') {
+				$('.optionCheckBox').each(function(){
+				    $(this).prop("checked", false);
+				});
+				$.multiCheckBoxFilters.updatedFilters = {};
+				
+			} else {
+				console.log(id);
+				var arr = $.multiCheckBoxFilters.updatedFilters[filter];
+				arr = arr.filter(function(n){ 
+					return n != id;
+				});
+				$.multiCheckBoxFilters.updatedFilters[filter] = arr;
+				
+				$("#"+filter+"_"+id).prop("checked", false);
+			}
+			
+			$('.selectAllCheckbox').prop("checked", false);
+			
+			$.multiCheckBoxFilters.changeSelection($.multiCheckBoxFilters.updatedFilters);
+		});
+	</script>
+</body>
+</html>
